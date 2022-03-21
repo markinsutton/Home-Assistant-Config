@@ -19,6 +19,7 @@ image
 ip_bans.yaml
 secrets.yaml
 known_devices.yaml
+google_calendars.yaml
 
 # Build-in blueprints ignores
 blueprints/*/homeassistant
@@ -46,3 +47,4 @@ www/community
 # Temporary ignores
 .old_config
 .logi_cache.pickle
+.google.token
