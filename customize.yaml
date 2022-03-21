@@ -1,0 +1,28 @@
+switch.tp_link_plug_4:
+  icon: mdi:toggle-switch-off-outline
+calendar.https_grocy_markinsutton_com_443_api_calendar_ical_secret_uk0fis3b27vqgbdbiwirhra0fnzgceyqcqzuozkgzsfvbmgcb9:
+  friendly_name: Grocy Calendar
+sensor.energy_usage:
+  unit_of_measurement: kWh
+  device_class: energy
+  state_class: measurement
+  last_reset: '2021-09-02T00:00:00.00000+00:00'
+sensor.energy_consumed:
+  device_class: energy
+  state_class: measurement
+  last_reset: '2021-09-02T00:00:00+01:00'
+  unit_of_measurement: kWh
+sensor.computer_wattage:
+  device_class: energy
+  last_reset: '2021-08-22T11:00:38.600149+00:00'
+device_tracker.cooper_d_2:
+  friendly_name: Mini Cooper
+  image: /local/image/mini.jpg
+sensor.energy_cost:
+  unit_of_measurement: GBP/kWh
+sensor.house_total_energy:
+  state_class: measurement
+  unit_of_measurement: kWh
+  device_class: energy
+device_tracker.cooper_d:
+  friendly_name: 'MINI '

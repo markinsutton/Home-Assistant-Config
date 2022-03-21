@@ -1,0 +1,9 @@
+
+# # Configure a default setup of Home Assistant (frontend, api, etc)
+# default_config:
+
+homeassistant:
+  # Load packages
+  packages: !include_dir_named integrations
+
+

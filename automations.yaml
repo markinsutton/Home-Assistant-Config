@@ -1,0 +1,1762 @@
+- id: '1596478693555'
+  alias: Bathroom Lights
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: 8c7b49e4056211eb89cb8d7fe46fddfb
+    entity_id: binary_sensor.bathroom_presence
+    domain: binary_sensor
+    id: bathroom motion detected
+  - type: no_motion
+    platform: device
+    device_id: 8c7b49e4056211eb89cb8d7fe46fddfb
+    entity_id: binary_sensor.bathroom_presence
+    domain: binary_sensor
+    id: bathroom Motion Clear
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: bathroom motion detected
+      - condition: time
+        before: '19:30:00'
+        after: 08:00:00
+      sequence:
+      - type: turn_on
+        device_id: c755b0f3a3c50afa5817ff305f2fbe44
+        entity_id: switch.bathroom_ceiling
+        domain: switch
+    - conditions:
+      - condition: trigger
+        id: bathroom Motion Clear
+      sequence:
+      - type: turn_off
+        device_id: c755b0f3a3c50afa5817ff305f2fbe44
+        entity_id: switch.bathroom_ceiling
+        domain: switch
+      - type: turn_off
+        device_id: c021ab838d300e5a71788f8c38484df6
+        entity_id: switch.bathroom_cabinet_power
+        domain: switch
+    - conditions:
+      - condition: trigger
+        id: bathroom motion detected
+      sequence:
+      - service: switch.turn_on
+        data: {}
+        target:
+          entity_id: switch.bathroom_cabinet_power
+    default: []
+  mode: single
+- id: '1597102095777'
+  alias: Ambilight Power Toggle
+  description: ''
+  trigger:
+  - entity_id: remote.lounge
+    from: 'off'
+    platform: state
+    to: 'on'
+    id: TV turns on
+  - platform: state
+    entity_id: remote.lounge
+    from: 'on'
+    to: 'off'
+    id: TV turns off
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: TV turns on
+      sequence:
+      - service: light.turn_on
+        data: {}
+        target:
+          entity_id: light.ambilight
+    - conditions:
+      - condition: trigger
+        id: TV turns off
+      sequence:
+      - service: light.turn_off
+        data: {}
+        target:
+          entity_id: light.ambilight
+    default: []
+  - type: turn_on
+    device_id: 7551128654a54761b2df10a51dae4011
+    entity_id: switch.ambilight_nightlight
+    domain: switch
+  mode: single
+- id: '1597125684611'
+  alias: Kitchen Lights Toggle
+  description: Turning on Kitchen lights when it is dark
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.kitchen_presence
+    id: kitchen-on
+    from: 'off'
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.kitchen_presence
+    id: kitchen-off
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 2
+      seconds: 0
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: kitchen-on
+      - condition: state
+        entity_id: binary_sensor.night
+        state: 'on'
+      sequence:
+      - service: switch.turn_on
+        data: {}
+        target:
+          entity_id:
+          - switch.kitchen_cupboards_power
+          - switch.tp_link_plug_2
+    - conditions:
+      - condition: trigger
+        id: kitchen-on
+      sequence:
+      - service: switch.turn_on
+        data: {}
+        target:
+          entity_id: switch.kitchen_cupboards_power
+    - conditions:
+      - condition: trigger
+        id: kitchen-off
+      sequence:
+      - service: switch.turn_off
+        data: {}
+        target:
+          entity_id:
+          - switch.kitchen_cupboards_power
+          - switch.tp_link_plug_2
+    default: []
+  mode: single
+- id: doorbell
+  alias: Door Bell
+  trigger:
+  - entity_id: binary_sensor.doorbell
+    from: 'off'
+    platform: state
+    to: 'on'
+  condition:
+  - condition: zone
+    entity_id: person.mark_mayer
+    zone: zone.home
+  action:
+  - service: media_player.play_media
+    target:
+      entity_id: media_player.chromecast
+    data:
+      media_content_id: media-source://camera/camera.front_door
+      media_content_type: image/jpeg
+    metadata:
+      title: Front Door
+      thumbnail: /api/camera_proxy/camera.front_door
+      media_class: video
+      children_media_class:
+      navigateIds:
+      - {}
+      - media_content_type: app
+        media_content_id: media-source://camera
+  - data:
+      message: There is someone at the Door
+    service: notify.lametric
+  - service: media_player.play_media
+    data:
+      media_content_id: amzn_sfx_doorbell_chime_02
+      media_content_type: sound
+    target:
+      entity_id: media_player.mark_s_echo_show_5_2nd_gen
+  - service: notify.alexa_media_mark_s_echo_show_5_2nd_gen
+    data:
+      message: 'There is someone at the door '
+      data:
+        type: tts
+  - type: flash
+    device_id: 8c7be4c4056211eba3d48ff3057987af
+    entity_id: light.door_lamp
+    domain: light
+  - type: flash
+    device_id: 8c7c549f056211eb8ef69f7c17ce67f0
+    entity_id: light.lamp
+    domain: light
+  - type: flash
+    device_id: 8c7bb558056211eb830167ae2c9b4f6c
+    entity_id: light.desk_light_strip
+    domain: light
+  - service: notify.bedroom_tv
+    data:
+      message: 'There is someone at the door '
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 20
+      milliseconds: 0
+  - service: media_player.media_stop
+    target:
+      entity_id: media_player.mark_s_echo_show_5_2nd_gen
+    data: {}
+  mode: single
+- id: '1599427475743'
+  alias: 'Bedroom Wardrobe '
+  description: ''
+  trigger:
+  - type: opened
+    platform: device
+    device_id: 8c7b6a42056211ebb65d298d9c76c20a
+    entity_id: binary_sensor.wardrobe
+    domain: binary_sensor
+    id: Door Open
+  - type: not_opened
+    platform: device
+    device_id: 8c7b6a42056211ebb65d298d9c76c20a
+    entity_id: binary_sensor.wardrobe
+    domain: binary_sensor
+    id: Door Closed
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: Door Open
+      sequence:
+      - type: turn_on
+        device_id: ba47e74f04a811eb9e8343b859d275f5
+        entity_id: switch.wardrobe
+        domain: switch
+    - conditions:
+      - condition: trigger
+        id: Door Closed
+      sequence:
+      - type: turn_off
+        device_id: ba47e74f04a811eb9e8343b859d275f5
+        entity_id: switch.wardrobe
+        domain: switch
+    default: []
+  mode: single
+- id: '1600541632748'
+  alias: Clock ON
+  description: ''
+  trigger:
+  - type: motion
+    platform: device
+    device_id: fb48772774e0453b8b609d3ca9c9ddae
+    entity_id: binary_sensor.lounge_presence
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+  condition: []
+  action:
+  - type: turn_on
+    device_id: 9bcc52286efb48ba89d2da06fa852a21
+    entity_id: switch.led_clock_power
+    domain: switch
+  mode: single
+  max: 10
+- id: '1600542213619'
+  alias: Clock Off
+  description: ''
+  trigger:
+  - type: no_motion
+    platform: device
+    device_id: fb48772774e0453b8b609d3ca9c9ddae
+    entity_id: binary_sensor.lounge_presence
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 30
+      seconds: 0
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 9bcc52286efb48ba89d2da06fa852a21
+    entity_id: switch.led_clock_power
+    domain: switch
+  mode: queued
+  max: 10
+- id: '1600543498034'
+  alias: 'Lounge night time '
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.lounge_presence
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: binary_sensor.night
+    state: 'on'
+  action:
+  - scene: scene.evening_lounge_lights
+  mode: single
+- id: '1600546622997'
+  alias: 'lounge lights off '
+  description: ''
+  trigger:
+  - type: no_motion
+    platform: device
+    device_id: 8c7b3b48056211ebbf18a9d032537218
+    entity_id: binary_sensor.lounge_presence
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 30
+      seconds: 0
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 8c7c637c056211eb8fb1a76f1210c729
+    entity_id: light.lounge
+    domain: light
+  mode: queued
+  max: 10
+- id: welcomehome
+  alias: Welcome Home
+  trigger:
+  - type: not_opened
+    platform: device
+    device_id: 8c7b7d38056211eb872ddf0a2130c214
+    entity_id: binary_sensor.keys
+    domain: binary_sensor
+  condition:
+  - condition: state
+    entity_id: person.mark_mayer
+    state: home
+  action:
+  - service: alarm_control_panel.alarm_disarm
+    data:
+      code: '6275'
+    target:
+      entity_id: alarm_control_panel.home_alarm
+  - data:
+      entity_id: media_player.bedroom_speaker
+      message: welcome home marky mark, lord of the manor, king of the castle
+    service: tts.cloud_say
+  - data:
+      entity_id: media_player.living_room_display
+      message: welcome home marky mark, lord of the manor, king of the castle
+    service: tts.cloud_say
+  - data:
+      message: Welcome Home Marky Mark, Lord of the Manor, King of the Castle
+    service: notify.lametric
+  - delay: 00:00:05
+  - data:
+      entity_id: media_player.living_room_display
+    service: media_player.turn_off
+    entity_id: media_player.living_room_display
+  mode: single
+- id: lounge_actioned
+  alias: Lounge lights off action
+  trigger:
+  - entity_id: binary_sensor.lounge_presence
+    for: 00:10:00
+    platform: state
+    to: 'off'
+  condition:
+  - condition: state
+    entity_id: light.lounge
+    state: 'on'
+  action:
+  - service: script.activate_alexa_actionable_notification
+    data_template:
+      text: Hey Marky Mark it appears no one is in the lounge, do you want me to turn
+        the lights off?
+      event_id: alexa_notification_lounge_occupied
+      alexa_device: media_player.bedroom
+  mode: single
+- id: lounge_occupied
+  alias: yes response for alexa
+  trigger:
+  - platform: event
+    event_type: alexa_actionable_notification
+    event_data:
+      event_id: alexa_notification_lounge_occupied
+      event_response: ResponseYes
+  action:
+  - service: light.turn_off
+    entity_id: light.ceiling_lights
+  - service: light.turn_off
+    data: {}
+    entity_id: light.lamps
+  mode: single
+- id: '1600628370747'
+  alias: Arm Home
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: device_tracker.pixel_6_pro
+    to: away
+  condition:
+  - type: is_open
+    condition: device
+    device_id: 8c7b7d38056211eb872ddf0a2130c214
+    entity_id: binary_sensor.keys
+    domain: binary_sensor
+  action:
+  - service: alarm_control_panel.alarm_arm_away
+    data: {}
+    target:
+      entity_id:
+      - alarm_control_panel.my_home
+      - alarm_control_panel.home_alarm
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 30
+      milliseconds: 0
+  - service: notify.mobile_app_pixel_6_pro
+    data:
+      message: alarm active
+  mode: single
+- id: '1606676129714'
+  alias: switch  lounge
+  description: ''
+  trigger:
+  - device_id: 8ed3c362f86f71f43e4cba4c4d001351
+    domain: deconz
+    platform: device
+    type: remote_button_short_press
+    subtype: right
+  condition: []
+  action:
+  - type: toggle
+    device_id: 8c7c049b056211eb92fd3d5601a5f9cf
+    entity_id: light.hall
+    domain: light
+  mode: single
+- id: '1606680458485'
+  alias: switch left power down
+  description: ''
+  trigger:
+  - device_id: 8ed3c362f86f71f43e4cba4c4d001351
+    domain: deconz
+    platform: device
+    type: remote_button_double_press
+    subtype: left
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 8c7c637c056211eb8fb1a76f1210c729
+    entity_id: light.lounge
+    domain: light
+  - type: turn_off
+    device_id: e3ae64a3aa3747519fa766b43b1e39b9
+    entity_id: switch.kitchen_cupboards_power
+    domain: switch
+  - type: turn_off
+    device_id: ba5bf0b404a811eba9c3477eda41925b
+    entity_id: switch.tp_link_plug_2
+    domain: switch
+  - type: turn_off
+    device_id: 9bcc52286efb48ba89d2da06fa852a21
+    entity_id: switch.led_clock_power
+    domain: switch
+  mode: single
+- id: '1608559246557'
+  alias: Tag Clock is scanned
+  description: ''
+  trigger:
+  - platform: tag
+    tag_id: 8141f176-7ece-4c38-92d6-a9583cba74f1
+  condition: []
+  action:
+  - type: toggle
+    device_id: 9bcc52286efb48ba89d2da06fa852a21
+    entity_id: switch.led_clock_power
+    domain: switch
+  mode: single
+- id: '1608816232311'
+  alias: Plant on
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+  condition: []
+  action:
+  - type: turn_on
+    device_id: 30289460f96c45fb9db83c163cf2eabd
+    entity_id: switch.plant_power
+    domain: switch
+  mode: single
+- id: '1608816307885'
+  alias: midnight Off
+  description: ''
+  trigger:
+  - platform: time
+    at: 00:00:00
+  condition: []
+  action:
+  - service: switch.turn_off
+    target:
+      device_id: 30289460f96c45fb9db83c163cf2eabd
+  - type: turn_off
+    device_id: b70c1b2305c5409f9f66b1329ae52f41
+    entity_id: light.outside_leds
+    domain: light
+  - type: turn_off
+    device_id: d2a3997f3f12d9b748e8dffdb88fb6ef
+    entity_id: light.twinkly_9848f4
+    domain: light
+  mode: single
+- id: '1608816662412'
+  alias: Grow Light On
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunrise
+  condition: []
+  action:
+  - type: turn_on
+    device_id: 74cc661cdf9acb7250dc8dc672435964
+    entity_id: switch.grow_light
+    domain: switch
+  mode: single
+- id: '1608816693200'
+  alias: Grow Light Off
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 74cc661cdf9acb7250dc8dc672435964
+    entity_id: switch.grow_light
+    domain: switch
+  mode: single
+- id: '1610638415017'
+  alias: System recovered
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.home_assistant
+    from: 'off'
+    to: 'on'
+  condition:
+  - condition: state
+    entity_id: binary_sensor.mark_in_bed
+    state: 'off'
+  action:
+  - service: tts.cloud_say
+    data:
+      entity_id: media_player.bedroom_speaker
+      message: Hey Marky Mark, All systems are back online
+  - service: notify.lametric
+    data:
+      message: Hey Marky Mark, All systems are back online
+  mode: single
+- id: '1610671557456'
+  alias: good night switch
+  description: ''
+  trigger:
+  - device_id: 8c7af748056211ebb098af5046410122
+    domain: deconz
+    platform: device
+    type: remote_button_long_press
+    subtype: turn_off
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 8c7c80aa056211eb861b6bb74203744e
+    entity_id: light.bedroom
+    domain: light
+  - service: switch.turn_off
+    data: {}
+    entity_id: switch.bf5faba09d48578790unck
+  - service: tts.cloud_say
+    data:
+      entity_id: media_player.bedroom_speaker
+      message: Good Night marky Mark. Sleep well and Sweet dreams
+      language: en-IE
+  - service: input_boolean.turn_on
+    data: {}
+    target:
+      entity_id: input_boolean.sleep_time
+  mode: single
+- id: '1611851672847'
+  alias: ' Security Active '
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.bedroom_presence
+    to: 'on'
+    from: 'off'
+  - platform: state
+    entity_id: binary_sensor.kitchen_presence
+    from: 'off'
+    to: 'on'
+  - platform: state
+    entity_id: binary_sensor.lounge_presence
+    from: 'off'
+    to: 'on'
+    for: 00:00:20
+  condition:
+  - condition: state
+    entity_id: alarm_control_panel.home_alarm
+    state: armed_away
+  action:
+  - service: notify.mobile_app_pixel_6_pro
+    data:
+      message: There has been movement in your home
+  - service: tts.cloud_say
+    data:
+      entity_id: media_player.bedroom_speaker
+      message: 'I see you, what are you doing?, the Home owner has been notified,
+        So please leave now. '
+  - service: tts.cloud_say
+    data:
+      entity_id: media_player.living_room_display
+      message: 'I see you, what are you doing?, the Home owner has been notified,
+        So please leave now. '
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 8
+      milliseconds: 0
+  - service: media_player.media_stop
+    target:
+      device_id: 5b8635313f057cff984aed83ba2a893e
+  mode: single
+- id: '1613353576902'
+  alias: '3D print finished '
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.octoprint_printing_2
+    from: 'on '
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+  condition: []
+  action:
+  - service: notify.lametric
+    data:
+      title: 'Geeetech '
+      message: 'Marky Mark. The 3D printer is finished '
+  - service: tts.cloud_say
+    data:
+      entity_id: media_player.bedroom_speaker
+      message: 'Hey marky Mark, Your 3D print is finished '
+  mode: single
+- id: '1613606293863'
+  alias: Bedroom Heating
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.bedroom_presence
+    above: '22'
+    id: Bedroom Hot
+  - platform: numeric_state
+    entity_id: sensor.bedroom_presence
+    for:
+      hours: 0
+      minutes: 30
+      seconds: 0
+    below: '19'
+    id: Bedroom Cold
+  condition:
+  - condition: time
+    before: 00:00:00
+    after: 06:00:00
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: Bedroom Cold
+      - condition: device
+        type: is_on
+        device_id: 54df091eaa8e4bc5602f9315c36286f5
+        entity_id: switch.bedroom_heater
+        domain: switch
+      sequence: []
+    - conditions:
+      - condition: trigger
+        id: Bedroom Hot
+      sequence:
+      - type: turn_off
+        device_id: 54df091eaa8e4bc5602f9315c36286f5
+        entity_id: switch.bedroom_heater
+        domain: switch
+    default: []
+  mode: single
+- id: '1616033342596'
+  alias: desk light switch
+  description: ''
+  trigger:
+  - device_id: 8c7af085056211ebb32fdb65828bd3a0
+    domain: deconz
+    platform: device
+    type: remote_button_long_press
+    subtype: right
+  condition: []
+  action:
+  - type: toggle
+    device_id: 8575a404166c52125b0c0a85b9332b15
+    entity_id: switch.tp_link_plug_8
+    domain: switch
+  mode: single
+- id: '1618143008389'
+  alias: Iron Off
+  description: ''
+  trigger:
+  - type: no_motion
+    platform: device
+    device_id: 354c98fa45639a2a3f108c8fc8b87fe3
+    entity_id: binary_sensor.bedroom_presence
+    domain: binary_sensor
+    for:
+      hours: 0
+      minutes: 3
+      seconds: 0
+      milliseconds: 0
+  condition:
+  - condition: device
+    type: is_on
+    device_id: 8575a404166c52125b0c0a85b9332b15
+    entity_id: switch.tp_link_plug_8
+    domain: switch
+    for:
+      hours: 0
+      minutes: 10
+      seconds: 0
+      milliseconds: 0
+  action:
+  - type: turn_off
+    device_id: 8575a404166c52125b0c0a85b9332b15
+    entity_id: switch.tp_link_plug_8
+    domain: switch
+  mode: single
+- id: '1619298399448'
+  alias: 'Microwave finished '
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.microwave_wattage
+    to: '0.0'
+  condition: []
+  action:
+  - service: tts.cloud_say
+    data:
+      entity_id: media_player.bedroom_speaker
+      message: hey Marky Mark. the Microwave is finished
+  - service: notify.lametric
+    data:
+      message: Microwave is finished
+  mode: single
+- id: '1619307975375'
+  alias: Gone to Bed
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.mark_in_bed
+    to: 'on'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+    id: Mark is in bed
+    from: 'off'
+  - platform: state
+    entity_id: binary_sensor.mark_in_bed
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+    id: Mark is out bed
+    from: 'on'
+  condition:
+  - condition: state
+    entity_id: input_boolean.sleep_time
+    state: 'on'
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: Mark is in bed
+      sequence:
+      - service: tts.cloud_say
+        data:
+          entity_id: media_player.bedroom_speaker
+          message: Good Night Marky Mark, Sweet Dreams
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 10
+          milliseconds: 0
+      - service: media_player.play_media
+        target:
+          entity_id: media_player.bedroom_speaker
+        data:
+          media_content_id: spotify://44ad6abc0f6e0d22862e525b41978b6c/spotify:playlist:37i9dQZF1DWSUFOo47GEsI
+          media_content_type: spotify://playlist
+        metadata:
+          title: Sleep Tight
+          thumbnail: https://i.scdn.co/image/ab67706f0000000360fd1f89de6186b9f4d2fa80
+          media_class: playlist
+          children_media_class: track
+          navigateIds:
+          - {}
+          - media_content_type: spotify://library
+            media_content_id: spotify://44ad6abc0f6e0d22862e525b41978b6c
+          - media_content_type: spotify://current_user_playlists
+            media_content_id: spotify://44ad6abc0f6e0d22862e525b41978b6c/current_user_playlists
+          - media_content_type: spotify://playlist
+            media_content_id: spotify://44ad6abc0f6e0d22862e525b41978b6c/spotify:playlist:37i9dQZF1DWSUFOo47GEsI
+      - type: turn_off
+        device_id: 3a3ebc18240be787c0c3cb681c308ba1
+        entity_id: light.bedroom_ceiling
+        domain: light
+      - delay:
+          hours: 0
+          minutes: 15
+          seconds: 0
+          milliseconds: 0
+      - service: media_player.media_stop
+        data: {}
+        target:
+          entity_id: media_player.bedroom_speaker
+    - conditions:
+      - condition: trigger
+        id: Mark is out bed
+      sequence:
+      - service: media_player.media_stop
+        data: {}
+        target:
+          entity_id: media_player.bedroom_speaker
+      - service: light.turn_on
+        data: {}
+        target:
+          entity_id: light.under_bed_light
+    default: []
+  mode: single
+- id: '1620062717186'
+  alias: 'Post Arrived '
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.letter
+    from: 'off'
+    to: 'on'
+  condition: []
+  action:
+  - service: notify.lametric
+    data:
+      message: 'Letter has arrived at your door '
+  - service: notify.mobile_app_pixel_6_pro
+    data:
+      title: Home Assistant
+      message: 'Post Has Arrived '
+  - service: tts.cloud_say
+    data:
+      entity_id: media_player.bedroom_speaker
+      message: Hey Marky Mark, A letter has arrived for you.
+  mode: single
+- id: '1620290441933'
+  alias: security system
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.bedroom_presence
+    from: 'off'
+    to: 'on'
+  condition: []
+  action:
+  - service: tts.cloud_say
+    data:
+      entity_id: media_player.bedroom_speaker
+      message: I see u
+  mode: single
+- id: '1621783873003'
+  alias: 'Speedtest '
+  description: Runs a speed test every 30 minutes
+  trigger:
+  - platform: time_pattern
+    minutes: /30
+  condition: []
+  action:
+  - service: speedtestdotnet.speedtest
+  mode: restart
+- id: '1627415563211'
+  alias: 'Shower occupied '
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.flat_power_consumption
+    above: '8000'
+    id: 'Shower occupied '
+  - platform: numeric_state
+    entity_id: sensor.flat_power_consumption
+    below: '8000'
+    id: Shower Vacant
+  condition:
+  - condition: state
+    entity_id: light.bathroom_ceiling
+    state: 'on'
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: 'Shower occupied '
+      sequence:
+      - service: automation.turn_off
+        data: {}
+        target:
+          entity_id:
+          - automation.bathroom_off
+    - conditions:
+      - condition: trigger
+        id: Shower Vacant
+      sequence:
+      - service: automation.turn_on
+        data: {}
+        target:
+          entity_id: automation.bathroom_off
+    default: []
+  mode: single
+- id: '1628509465093'
+  alias: Desk Powered up
+  description: ''
+  trigger:
+  - platform: device
+    type: turned_on
+    device_id: 7a4c6d2d47092be7e2fdd156e09f25e2
+    entity_id: switch.desk
+    domain: switch
+    id: des
+  condition: []
+  action:
+  - service: switch.turn_on
+    target:
+      entity_id: switch.computer_wake
+  mode: single
+- id: '1630006670591'
+  alias: Lounge dim up
+  description: ''
+  trigger:
+  - device_id: 8c7afd58056211ebaa89653a24e55fcd
+    domain: deconz
+    platform: device
+    type: remote_button_short_press
+    subtype: dim_up
+  condition: []
+  action:
+  - device_id: 8c7c637c056211eb8fb1a76f1210c729
+    domain: light
+    entity_id: light.lounge
+    type: brightness_increase
+  mode: single
+- id: '1630006756956'
+  alias: Lounge Dim down
+  description: ''
+  trigger:
+  - device_id: 8c7afd58056211ebaa89653a24e55fcd
+    domain: deconz
+    platform: device
+    type: remote_button_short_press
+    subtype: dim_down
+  condition: []
+  action:
+  - device_id: 8c7c637c056211eb8fb1a76f1210c729
+    domain: light
+    entity_id: light.lounge
+    type: brightness_decrease
+  mode: single
+- id: '1630006995852'
+  alias: 'Lounge dim evening '
+  description: ''
+  trigger:
+  - device_id: 8c7afd58056211ebaa89653a24e55fcd
+    domain: deconz
+    platform: device
+    type: remote_button_long_press
+    subtype: dim_down
+  condition: []
+  action:
+  - service: scene.turn_on
+    target:
+      entity_id: scene.evening_lounge_lights
+  mode: single
+- id: '1630138694747'
+  alias: Tag Computer is scanned
+  description: ''
+  trigger:
+  - platform: tag
+    tag_id: 203677b8-3f29-4413-89eb-5c7b3a3b696e
+  condition: []
+  action:
+  - type: toggle
+    device_id: e021295e91699cf96dfdeddadb1d2fd3
+    entity_id: switch.desk_power
+    domain: switch
+  mode: single
+- id: '1630139090814'
+  alias: Tag Kettle is scanned
+  description: ''
+  trigger:
+  - platform: tag
+    tag_id: 787547c6-3cbb-476a-8660-a8655e35c9e1
+  condition: []
+  action:
+  - service: webhook_service.basic_webhook
+    data:
+      webhook: https://maker.ifttt.com/trigger/kettle/with/key/jOh5VVDh2NYYoxo1P1yrf4LyjBL7JtAB-1SktxQB3tB
+  mode: single
+- id: '1630348421257'
+  alias: Keys left behind
+  description: ''
+  trigger:
+  - platform: zone
+    entity_id: device_tracker.life360_mark_mayer
+    zone: zone.home
+    event: leave
+  condition:
+  - condition: state
+    entity_id: device_tracker.keysmart_max
+    state: home
+    for: 00:02:00
+  action:
+  - service: notify.mobile_app_pixel_2_xl
+    data:
+      title: Keys Left behind
+      message: 'Marky Mark, you have left your keys behind you Muppet '
+  mode: single
+- id: '1631541995417'
+  alias: Cloak Cupboard Lights
+  description: ''
+  trigger:
+  - type: not_opened
+    platform: device
+    device_id: 8c7b5c39056211eba9e4f1b5c21a88d0
+    entity_id: binary_sensor.cloak_cupboard
+    domain: binary_sensor
+    id: Cupboard Closed
+  - type: opened
+    platform: device
+    device_id: 8c7b5c39056211eba9e4f1b5c21a88d0
+    entity_id: binary_sensor.cloak_cupboard
+    domain: binary_sensor
+    id: Cupboard Opened
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: Cupboard Opened
+      sequence:
+      - type: turn_on
+        device_id: fcb1482a671da8d4d74e96dbacb34619
+        entity_id: switch.cloak_cupboard
+        domain: switch
+    - conditions:
+      - condition: trigger
+        id: Cupboard Closed
+      sequence:
+      - type: turn_off
+        device_id: fcb1482a671da8d4d74e96dbacb34619
+        entity_id: switch.cloak_cupboard
+        domain: switch
+    default: []
+  mode: single
+- id: '1631869081400'
+  alias: Medication Reminder
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.pixel_6_last_notification
+    to: Hey! It's time to take your meds!
+  condition: []
+  action:
+  - service: notify.lametric
+    data:
+      message: Hey! Marky Mark It's time to take your meds
+  - service: tts.cloud_say
+    data:
+      entity_id: media_player.bedroom_speaker
+      message: Hey, Marky Mark. Its time to take your Medication
+  - service: tts.cloud_say
+    data:
+      entity_id: media_player.living_room_display
+      message: Hey, Marky Mark. Its time to take your Medication
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 10
+      milliseconds: 0
+  - service: media_player.media_stop
+    target:
+      entity_id: media_player.living_room_display
+    data: {}
+  mode: single
+- id: '1636119734926'
+  alias: soldering iron powered
+  description: ''
+  trigger:
+  - type: power
+    platform: device
+    device_id: 30585e7142444a60b1ccf58320a5ecd2
+    entity_id: sensor.soldering_iron_wattage
+    domain: sensor
+    above: 20
+    id: Soldering Iron Heating
+  - type: power
+    platform: device
+    device_id: 30585e7142444a60b1ccf58320a5ecd2
+    entity_id: sensor.soldering_iron_wattage
+    domain: sensor
+    below: 5
+    id: 'Soldering Iron idle '
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: 'Soldering Iron idle '
+      sequence:
+      - type: turn_off
+        device_id: 8c7bb558056211eb830167ae2c9b4f6c
+        entity_id: light.desk_light_strip
+        domain: light
+    - conditions:
+      - condition: trigger
+        id: Soldering Iron Heating
+      sequence:
+      - service: scene.turn_on
+        target:
+          entity_id: scene.soldering_iron_on
+        metadata: {}
+    default: []
+  mode: single
+- id: '1640379930715'
+  alias: 'Christmas '
+  description: ''
+  trigger:
+  - platform: sun
+    event: sunset
+    offset: '0'
+  condition: []
+  action:
+  - type: turn_on
+    device_id: d2a3997f3f12d9b748e8dffdb88fb6ef
+    entity_id: light.twinkly_9848f4
+    domain: light
+  - type: turn_on
+    device_id: e722a47dc90607e2321a9358f97c0997
+    entity_id: light.christmas_tree
+    domain: light
+  - type: turn_on
+    device_id: b70c1b2305c5409f9f66b1329ae52f41
+    entity_id: light.outside_leds
+    domain: light
+  mode: single
+- id: '1641051965677'
+  alias: Door tablet Charged
+  description: ''
+  trigger:
+  - type: battery_level
+    platform: device
+    device_id: d14a794fa5c024c0934ff9d64df66c58
+    entity_id: sensor.huawei_mediapad_t3_battery_level
+    domain: sensor
+    above: 80
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+  condition: []
+  action:
+  - type: turn_off
+    device_id: 2b0416899efa855bae82795c3bf355b2
+    entity_id: switch.office
+    domain: switch
+  mode: single
+- id: '1641125826886'
+  alias: Door tablet Battery Low
+  description: ''
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.huawei_mediapad_t3_battery_level
+    below: '40'
+  condition: []
+  action:
+  - type: turn_on
+    device_id: 2b0416899efa855bae82795c3bf355b2
+    entity_id: switch.office
+    domain: switch
+  mode: single
+- id: '1641650277590'
+  alias: kitchen Tablet Battery Low
+  description: ''
+  trigger:
+  - type: battery_level
+    platform: device
+    device_id: 028b53f69e28f4ed4fde2820b58f65ca
+    entity_id: sensor.galaxy_tab_a7_lite_battery_level
+    domain: sensor
+    below: 20
+  condition: []
+  action:
+  - type: turn_on
+    device_id: ba5ff32e04a811ebbf9c3b74b7103563
+    entity_id: switch.ambilight_power
+    domain: switch
+  mode: single
+- id: '1641650346170'
+  alias: kitchen Tablet Charged
+  description: ''
+  trigger:
+  - type: battery_level
+    platform: device
+    device_id: 028b53f69e28f4ed4fde2820b58f65ca
+    entity_id: sensor.galaxy_tab_a7_lite_battery_level
+    domain: sensor
+    above: 80
+  condition: []
+  action:
+  - type: turn_off
+    device_id: ba5ff32e04a811ebbf9c3b74b7103563
+    entity_id: switch.ambilight_power
+    domain: switch
+  mode: single
+- id: '1641937115192'
+  alias: Stellar Bot Down
+  description: ''
+  trigger:
+  - type: not_connected
+    platform: device
+    device_id: 8f35ead2b89b4e6dd5357728c6fdc442
+    entity_id: binary_sensor.stellarbot
+    domain: binary_sensor
+  condition: []
+  action:
+  - service: tts.cloud_say
+    data:
+      entity_id: media_player.bedroom_speaker
+      message: Hey Marky Mark? I haven't been able to get a reply from the Stellar
+        Bot
+  - service: notify.mobile_app_pixel_6_pro
+    data:
+      message: 'The Stellar Bot is down '
+      title: 'Stellar Transmissions Server '
+  mode: single
+- id: '1644354304050'
+  alias: Teams Status Polling
+  description: ''
+  trigger:
+  - platform: time
+    at: 07:00:00
+  condition: []
+  action:
+  - service: switch.turn_on
+    data: {}
+    target:
+      entity_id: switch.teams_status
+  mode: single
+- id: '1644354416735'
+  alias: Teams Status Polling Off
+  description: ''
+  trigger:
+  - platform: time
+    at: '18:00:00'
+  condition: []
+  action:
+  - service: switch.turn_off
+    data: {}
+    target:
+      entity_id: switch.teams_status
+  mode: single
+- id: '1644355390686'
+  alias: Team Status Input Select
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: switch.teams_status_available
+  - platform: state
+    entity_id: switch.teams_status_away
+  - platform: state
+    entity_id: switch.teams_status_busy
+  - platform: state
+    entity_id: switch.teams_status_dnd
+  - platform: state
+    entity_id: switch.teams_status_offline
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: switch.teams_status_available
+        state: 'on'
+      sequence:
+      - service: input_select.select_option
+        data:
+          option: Available
+        target:
+          entity_id: input_select.teams_status
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: switch.teams_status_away
+        state: 'on'
+      sequence:
+      - service: input_select.select_option
+        data:
+          option: Away
+        target:
+          entity_id: input_select.teams_status
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: switch.teams_status_busy
+        state: 'on'
+      sequence:
+      - service: input_select.select_option
+        data:
+          option: Busy
+        target:
+          entity_id: input_select.teams_status
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: switch.teams_status_dnd
+        state: 'on'
+      sequence:
+      - service: input_select.select_option
+        data:
+          option: DnD
+        target:
+          entity_id: input_select.teams_status
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: switch.teams_status_offline
+        state: 'on'
+      sequence:
+      - service: input_select.select_option
+        data:
+          option: Offline
+        target:
+          entity_id: input_select.teams_status
+  mode: single
+- id: '1645034117600'
+  alias: Mi Magic Cube
+  description: ''
+  use_blueprint:
+    path: bergstrom/mi-magic-cube-deconz-45-actions.yaml
+    input:
+      rotate_clockwise:
+      - service: media_player.volume_up
+        data: {}
+        target:
+          entity_id: media_player.bedroom_tv
+      rotate_counter_clockwise:
+      - service: media_player.volume_down
+        data: {}
+        target:
+          entity_id: media_player.bedroom_tv
+      remote: e416daca0db111ebb06a853ec0f419f0
+      one_side_slide: false
+      one_to_two: []
+      one_to_five: []
+      two_to_one: []
+      double_tap_any_side: false
+      cube_double_tap_any: []
+      cube_shake:
+      - service: switch.turn_on
+        data: {}
+        target:
+          entity_id: switch.bedroom_tv_power
+      cube_one_side_slide: []
+      one_to_one:
+      - service: webostv.command
+        data:
+          entity_id: media_player.bedroom_tv
+          command: tv/channelDown
+      six_to_six:
+      - service: webostv.command
+        data:
+          entity_id: media_player.bedroom_tv
+          command: tv/channelUp
+      five_to_five:
+      - service: webostv.button
+        data:
+          entity_id: media_player.bedroom_tv
+          button: MUTE
+      cube_fall:
+      - service: switch.turn_on
+        data: {}
+        target:
+          entity_id: switch.computer_power_2
+      - type: toggle
+        device_id: 7a4c6d2d47092be7e2fdd156e09f25e2
+        entity_id: switch.desk
+        domain: switch
+      - type: toggle
+        device_id: 62b077161f42c302061eb6be09dcdbdf
+        entity_id: light.wled_soundreactive_3
+        domain: light
+- id: '1646931247219'
+  alias: Lamtric Notification Twitch
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: sensor.markinsutton
+    to: streaming
+    id: markinsutton-streaming
+  - platform: state
+    entity_id: sensor.burner71
+    id: burner71-streaming
+    to: streaming
+  - platform: state
+    entity_id: sensor.drzzs
+    id: DrZzs-streaming
+    to: streaming
+  - platform: state
+    entity_id: sensor.djcquence
+    to: streaming
+    id: DJCquence-streaming
+  - platform: state
+    entity_id: sensor.johncockroft
+    to: streaming
+    id: JohnCockroft-streaming
+  - platform: state
+    entity_id: sensor.leipzigmusicstation
+    to: streaming
+    id: LeipzigMusicStation-streaming
+  - platform: state
+    entity_id: sensor.liquid_bongo
+    to: streaming
+    id: Liquid_bongo-streaming
+  - platform: state
+    entity_id: sensor.mark_loves_coffee
+    to: streaming
+    id: mark_loves_coffee_-Streaming
+  - platform: state
+    entity_id: sensor.mizburner73
+    to: streaming
+    id: Mizburner73-streaming
+  - platform: state
+    entity_id: sensor.r4csco
+    to: streaming
+    id: r4csco-streaming
+  - platform: state
+    entity_id: sensor.oh_bother
+    to: streaming
+    id: oh_bother-streaming
+  - platform: state
+    entity_id: sensor.thedjbigd
+    to: streaming
+    id: TheDJBigD-streaming
+  - platform: state
+    entity_id: sensor.viciouscode
+    to: streaming
+    id: ViciousCode-streaming
+  - platform: state
+    entity_id: sensor.stoneface_terminal
+    to: streaming
+    id: stoneface_terminal-streaming
+  - platform: state
+    entity_id: sensor.mjobsss_dj
+    to: streaming
+    id: Mjobss-streaming
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: markinsutton-streaming
+      sequence:
+      - service: notify.lametric
+        data:
+          message: On Air
+          data:
+            sound: notification
+            icon: '11616'
+            cycles: 0
+            priority: critical
+    - conditions:
+      - condition: trigger
+        id: burner71-streaming
+      sequence:
+      - service: notify.lametric
+        data:
+          message: Burner is Live on Twitch
+          data:
+            sound: notification
+            icon: '20643'
+    - conditions:
+      - condition: trigger
+        id: DrZzzs-streaming
+      sequence:
+      - service: notify.lametric
+        data:
+          message: The Doc is Live on Twitch
+          data:
+            sound: notification
+            icon: '20643'
+    - conditions:
+      - condition: trigger
+        id: DJCquence-streaming
+      sequence:
+      - service: notify.lametric
+        data:
+          message: DJ Cquence is live on Twitch
+          data:
+            sound: notification
+            icon: '20643'
+    - conditions:
+      - condition: trigger
+        id: JohnCockroft-streaming
+      sequence:
+      - service: notify.lametric
+        data:
+          message: John is Live on Twitch
+          data:
+            sound: notification
+            icon: '20643'
+    - conditions:
+      - condition: trigger
+        id: LeipzigMusicStation-streaming
+      sequence:
+      - service: notify.lametric
+        data:
+          data:
+            sound: notification
+            icon: '20643'
+          message: Leipzig Music Station is Live on Twitch
+    - conditions:
+      - condition: trigger
+        id: Liquid_bongo-streaming
+      sequence:
+      - service: notify.lametric
+        data:
+          message: Panda is Live on Twitch
+          data:
+            sound: notification
+            icon: '20643'
+    - conditions:
+      - condition: trigger
+        id: mark_loves_coffee_-Streaming
+      sequence:
+      - service: notify.lametric
+        data:
+          message: Mark Loves Coffee is Live on Twitch
+          data:
+            sound: notification
+            icon: '20643'
+    - conditions:
+      - condition: trigger
+        id: Mizburner73-streaming
+      sequence:
+      - service: notify.lametric
+        data:
+          message: Miz Burner is Live on Twitch
+          data:
+            sound: notification
+            icon: '20643'
+    - conditions:
+      - condition: trigger
+        id: r4csco-streaming
+      sequence:
+      - service: notify.lametric
+        data:
+          data:
+            sound: notification
+            icon: '20643'
+          message: R4CSCO is Live on Twitch
+    - conditions:
+      - condition: trigger
+        id: oh_bother-streaming
+      sequence:
+      - service: notify.lametric
+        data:
+          message: Oh bother is Live on Twitch
+          data:
+            sound: notification
+            icon: '20643'
+    - conditions:
+      - condition: trigger
+        id: TheDJBigD-streaming
+      sequence:
+      - service: notify.lametric
+        data:
+          message: The Big D is Live on Twitch
+          data:
+            sound: notification
+            icon: '20643'
+    - conditions:
+      - condition: trigger
+        id: stoneface_terminal-streaming
+      sequence:
+      - service: notify.lametric
+        data:
+          message: Stoneface & Terminal are Live on Twitch
+          data:
+            sound: notification
+            icon: '20643'
+    - conditions:
+      - condition: trigger
+        id: Mjobss-streaming
+      sequence:
+      - service: notify.lametric
+        data:
+          message: MJobss is Live on Twitch
+          data:
+            sound: notification
+            icon: '20643'
+    default: []
+  mode: single
+- id: '1646938936549'
+  alias: Bedroom Lights
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.bedroom_presence
+    to: 'on'
+    id: Bedroom Occupied
+  - platform: state
+    entity_id: binary_sensor.bedroom_presence
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 3
+      seconds: 0
+    id: bedroom vacant
+  - platform: state
+    entity_id: binary_sensor.bedroom_presence
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 2
+      seconds: 50
+    id: bedroom dim
+  condition:
+  - condition: sun
+    after: sunset
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: Bedroom Occupied
+      sequence:
+      - type: turn_on
+        device_id: 3a3ebc18240be787c0c3cb681c308ba1
+        entity_id: light.bedroom_ceiling
+        domain: light
+      - condition: state
+        entity_id: binary_sensor.mark_in_bed
+        state: 'Off'
+    - conditions:
+      - condition: trigger
+        id: bedroom dim
+      sequence:
+      - type: turn_on
+        device_id: 3a3ebc18240be787c0c3cb681c308ba1
+        entity_id: light.bedroom_ceiling
+        domain: light
+        brightness_pct: 30
+    - conditions:
+      - condition: trigger
+        id: bedroom vacant
+      sequence:
+      - type: turn_off
+        device_id: 3a3ebc18240be787c0c3cb681c308ba1
+        entity_id: light.bedroom_ceiling
+        domain: light
+    default: []
+  mode: queued
+- id: '1647471154423'
+  alias: Visitor Mode
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: input_boolean.visitor_mode
+    to: 'on'
+    id: Visitors
+  - platform: state
+    entity_id: input_boolean.visitor_mode
+    to: 'off'
+    id: 'No Visitors '
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: Visitors
+      sequence:
+      - service: automation.turn_off
+        data: {}
+        target:
+          entity_id: automation.lounge_lights_off
+      - service: tts.cloud_say
+        data:
+          entity_id: media_player.bedroom_speaker
+          message: Visitor Mode active, welcome to Marks House. ask if you need anything
+      - service: tts.cloud_say
+        data:
+          entity_id: media_player.living_room_display
+          message: Visitor Mode active, welcome to Marks House. ask if you need anything
+    - conditions:
+      - condition: trigger
+        id: 'No Visitors '
+      sequence:
+      - service: automation.turn_on
+        data: {}
+        target:
+          entity_id: automation.lounge_lights_off
+      - service: tts.cloud_say
+        data:
+          entity_id: media_player.bedroom_speaker
+          message: Visitor Mode deactivated
+      - service: tts.cloud_say
+        data:
+          entity_id: media_player.living_room_display
+          message: Visitor Mode deactivated
+    default: []
+  mode: single
+- id: '1647540720674'
+  alias: 'Washing Machine '
+  description: 'Power Monitoring for Washing Machine cycle '
+  trigger:
+  - type: power
+    platform: device
+    device_id: a46186f4d4f4234784594265a35eefbe
+    entity_id: sensor.tasmota_sub_energy_power
+    domain: sensor
+    below: 200
+  condition:
+  - condition: device
+    type: is_on
+    device_id: a46186f4d4f4234784594265a35eefbe
+    entity_id: switch.tasmota_sub
+    domain: switch
+    for:
+      hours: 1
+      minutes: 0
+      seconds: 0
+  action:
+  - service: tts.cloud_say
+    data:
+      entity_id: media_player.bedroom_speaker
+      message: Hey, Marky Mark. Washing Machine is Finished
+  - service: notify.lametric
+    data:
+      message: Washing Machine has Finished
+      title: Washing
+      data:
+        icon: '26673'
+        cycles: 5
+  mode: single

@@ -1,0 +1,54 @@
+- id: '1600543032557'
+  name: 'evening lounge lights '
+  entities:
+    light.door_lamp:
+      min_mireds: 153
+      max_mireds: 500
+      effect_list:
+      - colorloop
+      brightness: 136
+      color_temp: 500
+      is_deconz_group: false
+      friendly_name: Door Lamp
+      supported_features: 63
+      state: 'on'
+    light.lamp:
+      min_mireds: 153
+      max_mireds: 500
+      effect_list:
+      - colorloop
+      brightness: 144
+      color_temp: 500
+      is_deconz_group: false
+      friendly_name: Lamp
+      supported_features: 63
+      state: 'on'
+- id: '1636119959228'
+  name: soldering iron on
+  entities:
+    light.desk_light_strip:
+      min_mireds: 153
+      max_mireds: 500
+      effect_list:
+      - colorloop
+      supported_color_modes:
+      - color_temp
+      - hs
+      - xy
+      color_mode: xy
+      brightness: 94
+      hs_color:
+      - 1.111
+      - 84.706
+      rgb_color:
+      - 255
+      - 43
+      - 39
+      xy_color:
+      - 0.6793
+      - 0.3024
+      is_deconz_group: false
+      friendly_name: Desk Light Strip
+      supported_features: 44
+      state: 'on'
+  icon: mdi:soldering-iron
