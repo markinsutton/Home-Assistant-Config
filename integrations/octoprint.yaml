@@ -1,0 +1,13 @@
+# octoprint:
+#   host: !secret octopi_host
+#   api_key: !secret octopi_API   
+#   name: Geeetech
+#   number_of_tools: 3
+#   bed: true
+#   sensors:
+#     monitored_conditions:
+#       - 'Current State'
+#       - 'Job Percentage'
+#       - 'Time Remaining'
+#       - 'Temperatures'
+       

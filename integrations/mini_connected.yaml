@@ -1,0 +1,5 @@
+bmw_connected_drive:
+  name:
+    username: !secret username
+    password: !secret mini_password
+    region: "rest_of_world"

@@ -1,0 +1,14 @@
+platform: template 
+switches:
+  bedroom_tv_power:
+    # value_template: "{{ is_state('sensor.heater_power', 'off') }}"
+    turn_on:
+      service: rest_command.switchbot_device_command
+      data:
+        deviceId: !secret switchbot_monitor_deviceId
+        command: "turnOn"
+    turn_off:
+      service: rest_command.switchbot_device_command
+      data:
+        deviceId: !secret switchbot_monitor_deviceId
+        command: "turnOff"

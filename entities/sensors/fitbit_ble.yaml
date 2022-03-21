@@ -1,0 +1,6 @@
+platform: mqtt_room
+name: "fitbit"
+device_id: "fitbit:e301c56462c2"
+state_topic: "espresense/rooms"
+timeout: 5
+away_timeout: 120

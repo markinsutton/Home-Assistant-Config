@@ -1,0 +1,14 @@
+platform: template 
+switches:
+  computer_power:
+    value_template: "{{ is_state('sensor.computer_power', 'off') }}"
+    turn_on:
+      service: rest_command.switchbot_device_command
+      data:
+        deviceId: !secret switchbot_computer_deviceId
+        command: "turnOn"
+    turn_off:
+      service: rest_command.switchbot_device_command
+      data:
+        deviceId: !secret switchbot_computer_deviceId
+        command: "turnOff"

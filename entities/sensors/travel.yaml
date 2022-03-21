@@ -1,0 +1,11 @@
+platform: here_travel_time
+api_key: !secret here_travel_api
+name: Travel to Work
+origin_latitude: !secret home_latitude
+origin_longitude: !secret home_longitude
+destination_latitude: !secret work_latitude
+destination_longitude: !secret work_longitude 
+mode: car
+route_mode: fastest
+traffic_mode: true
+unit_system: imperial

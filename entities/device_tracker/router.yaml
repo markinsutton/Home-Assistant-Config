@@ -1,0 +1,4 @@
+# platform: netgear
+# host: !secret router_host
+# username: !secret router_username
+# password: !secret netgear_password

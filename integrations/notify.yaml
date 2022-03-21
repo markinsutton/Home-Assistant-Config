@@ -1,0 +1,5 @@
+# This loads up my notifications configurations
+#
+#https://www.home-assistant.io/integrations/notifications
+#
+notify: !include_dir_list ../entities/notifications

@@ -1,0 +1,12 @@
+platform: template
+sensors:
+  mark_in_bed:
+    friendly_name: "Mark is in Bed"
+    value_template: >
+      {{ states('sensor.bed')|float >= 50 }}
+  # person_2_in_bed:
+  #   friendly_name: "Person 2 in Bed"
+  #   value_template: >
+  #     {{ states('sensor.bed')|float > 20
+  #       and (states('sensor.bed')|float < 60 
+  #           or states('sensor.bed')|float >= 90 )}}

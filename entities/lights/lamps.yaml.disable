@@ -1,0 +1,6 @@
+platform: group
+name: Lamps
+unique_id: Lamps
+entities:
+  - light.lamp
+  - light.door_lamp

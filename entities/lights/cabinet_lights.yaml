@@ -1,0 +1,3 @@
+platform: switch
+name: Cabinet Lights
+entity_id: switch.cabinet_lights

@@ -1,0 +1,6 @@
+platform: lametric
+name: Lametric
+lifetime: 20
+icon: a7956
+cycles: 3
+priority: info

@@ -1,0 +1,5 @@
+platform: group
+name: Ceiling Lights
+entities:
+  - light.lounge_light_1
+  - light.lounge_light_2

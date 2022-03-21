@@ -1,0 +1,45 @@
+platform: twitch
+client_id: !secret twitch_id
+client_secret: !secret twitch_secret
+channels:
+  - markinsutton
+  - thedjbigd
+  - djcquence
+  - liquid_bongo
+  - junior_bongo
+  - mixedbyxelox
+  - ndk8media
+  - johncockroft
+  - mark_loves_coffee_
+  - djsquibby
+  - djanimal1
+  - trance_alliance
+  - MJOBSSS_DJ
+  - burner71
+  - pakkamusic
+  - onlythedetails
+  - pearlescentmoon
+  - philza
+  - orionv7
+  - oh_bother
+  - drzzs
+  - lost_in_house
+  - djplatinum1
+  - pinkablue1665
+  - viciouscode
+  - evanedinger
+  - ndk8media
+  - stoneface_terminal
+  - tkkttony
+  - metronomic_live
+  - solarstone
+  - leipzigmusicstation
+  - EvanEdinger
+  - mookittyy
+  - dj_sarah_hall
+  - r4csco
+  - mizburner73
+  - jongurd
+  - DJ_URBANOWL
+
+

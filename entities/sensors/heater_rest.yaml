@@ -1,0 +1,9 @@
+platform: rest 
+name: 'heater power'
+resource: !secret switchbot_heater_status_url
+method: GET
+scan_interval: 300 
+headers:
+  Authorization: !secret switchbot_api
+  Content-Type: 'application/json'
+value_template: '{{ value_json.body.power }}'  

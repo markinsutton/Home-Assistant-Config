@@ -1,0 +1,10 @@
+platform: group
+name: All lights
+entities:
+  - light.bedroom_2
+  - light.living_room
+  - light.kitchen
+  - light.kitchen_cupboards
+  - light.lamps
+  - light.living_colours
+  - light.ambilight

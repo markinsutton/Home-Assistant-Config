@@ -1,0 +1,3 @@
+# platform: mjpeg
+# name: Driveway
+# mjpeg_url: http://192.168.1.203:8080/videostream.cgi?user=admin&pwd=v3b2f4gofDu2pLT&resolution=32&rate=0

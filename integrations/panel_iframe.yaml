@@ -1,0 +1,5 @@
+panel_iframe:
+  grocy:
+    title: 'grocy'
+    icon: mdi:cart
+    url: 'https://grocy.markinsutton.com/choresoverview' 

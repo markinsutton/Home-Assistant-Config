@@ -1,0 +1,27 @@
+# influxdb:
+#   api_version: 2
+#   ssl: false 
+#   host: !secret nuc_host
+#   port: 8090
+#   token: !secret  influx_token
+#   organization: 56626792c16571ba
+#   bucket: homeassistant
+#   tags:
+#     source: HA
+#   tags_attributes:
+#     - friendly_name
+#   default_measurement: units
+#   exclude:
+#     entities:
+#       - zone.home
+#     domains:
+#       - persistent_notification
+#       - person
+#   include:
+#     domains:
+#       - sensor
+#       - binary_sensor
+#       - sun
+#     entities:
+#       - sensor.speedtest_download
+#       - sensor.speedtest_upload

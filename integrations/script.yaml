@@ -1,0 +1,5 @@
+# this will load all of my scripts
+#
+# https://www.home-assistant.io/integrations/script/
+
+script: !include ../scripts.yaml

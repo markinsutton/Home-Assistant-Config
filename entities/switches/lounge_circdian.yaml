@@ -1,0 +1,18 @@
+---
+# Circadian Lighting slowly synchronizes your color changing lights with the
+# regular naturally occuring color temperature of the sky throughout the day.
+#
+# This switch allows me to enable or disable this feature on the lights
+# in our living room.
+#
+# https://github.com/claytonjn/hass-circadian_lighting
+#
+platform: circadian_lighting
+name: lounge circadian lighting
+min_brightness: 50
+lights_ct:
+ - light.lounge_light_1
+ - light.lounge_light_2
+lights_xy:
+ - light.lounge_light_1
+ - light.lounge_light_2

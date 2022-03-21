@@ -1,0 +1,2 @@
+platform: pioneer
+host: !secret pioneer_host

@@ -1,0 +1,33 @@
+# id: '1647540720674'
+# alias: 'Washing Machine '
+# description: 'Power Monitoring for Washing Machine cycle '
+# trigger:
+# - type: power
+#   platform: device
+#   device_id: a46186f4d4f4234784594265a35eefbe
+#   entity_id: sensor.tasmota_sub_energy_power
+#   domain: sensor
+#   below: 200
+# condition:
+# - condition: device
+#   type: is_on
+#   device_id: a46186f4d4f4234784594265a35eefbe
+#   entity_id: switch.tasmota_sub
+#   domain: switch
+#   for:
+#     hours: 1
+#     minutes: 0
+#     seconds: 0
+# action:
+# - service: tts.cloud_say
+#   data:
+#     entity_id: media_player.bedroom_speaker
+#     message: Hey, Marky Mark. Washing Machine is Finished
+# - service: notify.lametric
+#   data:
+#     message: Washing Machine is Finished
+#     title: Washing
+#     data:
+#       icon: '26673'
+#       cycles: 5
+# mode: single

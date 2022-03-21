@@ -1,0 +1,5 @@
+platform: generic
+name: Living Room
+still_image_url: !secret reolink_still
+stream_source: !secret reolink_rtsp
+

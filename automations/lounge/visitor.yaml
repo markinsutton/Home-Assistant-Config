@@ -1,0 +1,49 @@
+# id: '1647471154423'
+# alias: Visitor Mode
+# description: ''
+# trigger:
+# - platform: state
+#   entity_id: input_boolean.visitor_mode
+#   to: 'on'
+#   id: Visitors
+# - platform: state
+#   entity_id: input_boolean.visitor_mode
+#   to: 'off'
+#   id: 'No Visitors '
+# condition: []
+# action:
+# - choose:
+#   - conditions:
+#     - condition: trigger
+#       id: Visitors
+#     sequence:
+#     - service: automation.turn_off
+#       data: {}
+#       target:
+#         entity_id: automation.lounge_lights_off
+#     - service: tts.cloud_say
+#       data:
+#         entity_id: media_player.bedroom_speaker
+#         message: Visitor Mode active, welcome to Marks House. ask if you need anything
+#     - service: tts.cloud_say
+#       data:
+#         entity_id: media_player.living_room_display
+#         message: Visitor Mode active, welcome to Marks House. ask if you need anything
+#   - conditions:
+#     - condition: trigger
+#       id: 'No Visitors '
+#     sequence:
+#     - service: automation.turn_on
+#       data: {}
+#       target:
+#         entity_id: automation.lounge_lights_off
+#     - service: tts.cloud_say
+#       data:
+#         entity_id: media_player.bedroom_speaker
+#         message: Visitor Mode deactivated
+#     - service: tts.cloud_say
+#       data:
+#         entity_id: media_player.living_room_display
+#         message: Visitor Mode deactivated
+#   default: []
+#   mode: single
