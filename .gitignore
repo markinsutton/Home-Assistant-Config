@@ -45,3 +45,4 @@ www/community
 
 # Temporary ignores
 .old_config
+.logi_cache.pickle
