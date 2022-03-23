@@ -1,0 +1,4 @@
+platform: statistics
+name: "marks wieght"
+entity_id: sensor.bed
+state_characteristic: mean
