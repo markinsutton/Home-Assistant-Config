@@ -1,7 +1,6 @@
 platform: mqtt_room
-name: "BLE tracker"
-device_id: "tile:d025cf214507"
+name: "BLE tile2"
+device_id: "tile:f0462366598f"
 state_topic: "espresense/rooms"
 timeout: 5
 away_timeout: 120
-

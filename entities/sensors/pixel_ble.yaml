@@ -1,8 +1,6 @@
 platform: mqtt_room
 name: "Pixel BLE"
-device_id: "b1778bbe-ddc2-4779-a042-b53de0481cfc-100-1"
+device_id: "iBeacon:b1778bbe-ddc2-4779-a042-b53de0481cfc-100-1"
 state_topic: "espresense/rooms"
 timeout: 5
 away_timeout: 120
-
-# iBeacon:21271800-1f88-49f8-81c0-22b672967bfd-100-1

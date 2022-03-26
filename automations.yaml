@@ -120,8 +120,8 @@
         data: {}
         target:
           entity_id:
-          - switch.kitchen_cupboards_power
           - switch.tp_link_plug_2
+          - switch.tp_link_plug_7
     - conditions:
       - condition: trigger
         id: kitchen-on
@@ -129,7 +129,7 @@
       - service: switch.turn_on
         data: {}
         target:
-          entity_id: switch.kitchen_cupboards_power
+          entity_id: switch.tp_link_plug_7
     - conditions:
       - condition: trigger
         id: kitchen-off
@@ -138,8 +138,8 @@
         data: {}
         target:
           entity_id:
-          - switch.kitchen_cupboards_power
           - switch.tp_link_plug_2
+          - switch.tp_link_plug_7
     default: []
   mode: single
 - id: doorbell
